@@ -1,6 +1,6 @@
 # camel-sftp-kexes
 
-Demo for a possible bug in Camel SFTP where [keyExchangeProtocols settings](https://camel.apache.org/components/4.0.x/sftp-component.html#_endpoint_query_option_keyExchangeProtocols) leak between endpoints through Jsch. Uses TestContainers, so requires a container runtime (like Docker).
+Demo for a possible bug in Camel SFTP where [keyExchangeProtocols settings](https://camel.apache.org/components/4.0.x/sftp-component.html#_endpoint_query_option_keyExchangeProtocols) leak between endpoints through Jsch. This project uses TestContainers, so running the test requires a container runtime (like Docker).
 
 When running the [RoutesTest](https://github.com/mtuomiko/camel-sftp-kexes/blob/master/src/test/java/net/mtuomiko/kexes/RoutesTest.kt), you can see from the Jsch logging output that both endpoints end up sending the same `JSCH -> client proposal: KEX algorithms: diffie-hellman-group14-sha1,ext-info-c` proposal even though `diffie-hellman-group14-sha1` is only configured on one of them. The default list from Jsch has more options for kex algorithms.
 
