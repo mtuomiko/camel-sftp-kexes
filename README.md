@@ -1,8 +1,24 @@
 # camel-sftp-kexes
 
-Demo for a possible bug in Camel SFTP where [keyExchangeProtocols settings](https://camel.apache.org/components/4.0.x/sftp-component.html#_endpoint_query_option_keyExchangeProtocols) leak between endpoints through Jsch. This project uses TestContainers, so running the test requires a container runtime (like Docker).
+Demo for a possible bug in Camel SFTP where [keyExchangeProtocols settings](https://camel.apache.org/components/4.0.x/sftp-component.html#_endpoint_query_option_keyExchangeProtocols) leak between endpoints through Jsch. 
+
+This project requires JDK 17, and uses TestContainers so running the test requires a container runtime (like Docker).
 
 When running the [RoutesTest](https://github.com/mtuomiko/camel-sftp-kexes/blob/master/src/test/java/net/mtuomiko/kexes/RoutesTest.kt), you can see from the Jsch logging output that both endpoints end up sending the same `JSCH -> client proposal: KEX algorithms: diffie-hellman-group14-sha1,ext-info-c` proposal even though `diffie-hellman-group14-sha1` is only configured on one of them. The default list from Jsch has more options for kex algorithms.
+
+Run test for example with `.\mvnw.cmd quarkus:test` on Windows or `./mvnw quarkus:test` otherwise.
+
+Sample output:
+
+```
+[org.apa.cam.com.fil.rem.RemoteFileProducer] (Test runner thread) Not already connected/logged in. Connecting to: sftp://myuser1@localhost:65471/upload1?jschLoggingLevel=INFO&keyExchangeProtocols=diffie-hellman-group14-sha1&password=xxxxxx
+...
+[org.apa.cam.com.fil.rem.SftpOperations] (Test runner thread) JSCH -> client proposal: KEX algorithms: diffie-hellman-group14-sha1,ext-info-c
+...
+[org.apa.cam.com.fil.rem.RemoteFileProducer] (Test runner thread) Not already connected/logged in. Connecting to: sftp://myuser2@localhost:65477/upload2?jschLoggingLevel=INFO&password=xxxxxx
+...
+[org.apa.cam.com.fil.rem.SftpOperations] (Test runner thread) JSCH -> client proposal: KEX algorithms: diffie-hellman-group14-sha1,ext-info-c
+```
 
 ---
 
